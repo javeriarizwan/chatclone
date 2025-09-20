@@ -2,9 +2,9 @@ import { User, Conversation, Message } from "@/types/chat";
 
 export const currentUser: User = {
   id: "user-1",
-  name: "Me",
-  email: "me@example.com", 
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=me",
+  name: "John",
+  email: "john@example.com", 
+  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=john",
   isOnline: true,
 };
 
