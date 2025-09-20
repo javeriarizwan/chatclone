@@ -17,14 +17,33 @@ interface ChatScreenProps {
 }
 
 export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
-  const [messages, setMessages] = useState<Message[]>(getMessagesForConversation(conversation.id));
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { logout } = useAuth();
 
-  const otherUser = conversation.participants.find(p => p.id !== currentUser.id) || conversation.participants[0];
+  // Add null checks for conversation and its properties
+  if (!conversation || !conversation.participants || conversation.participants.length === 0) {
+    return (
+      <div className="h-full flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="mb-4 text-6xl">❌</div>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Invalid Conversation</h2>
+          <p className="text-muted-foreground">Unable to load conversation data</p>
+        </div>
+      </div>
+    );
+  }
+
+  const otherUser = conversation.participants.find(p => p.id !== currentUser?.id) || conversation.participants[0];
+
+  useEffect(() => {
+    if (conversation?.id) {
+      setMessages(getMessagesForConversation(conversation.id));
+    }
+  }, [conversation?.id]);
 
   useEffect(() => {
     scrollToBottom();

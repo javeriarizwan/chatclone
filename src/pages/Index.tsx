@@ -1,12 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Conversation } from "@/types/chat";
-import { conversations } from "@/data/mockData";
+import { conversations, currentUser, createConversation } from "@/data/mockData";
 import { ChatScreen } from "@/components/ChatScreen";
 
 const Index = () => {
-  // Skip authentication and directly show chat with first conversation
-  const defaultConversation = conversations[0];
-  const [selectedConversation] = useState<Conversation>(defaultConversation);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+
+  useEffect(() => {
+    // Create a default conversation for testing if none exists
+    if (conversations.length === 0) {
+      const testUser = {
+        id: `user-${Date.now()}`,
+        name: "iqra",
+        email: "iqra@example.com",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=iqra",
+        isOnline: true,
+      };
+      
+      const testConversation = createConversation(testUser);
+      setSelectedConversation(testConversation);
+    } else {
+      setSelectedConversation(conversations[0]);
+    }
+  }, []);
+
+  if (!selectedConversation) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="mb-4 text-6xl">💬</div>
+          <h2 className="text-2xl font-semibold text-foreground mb-2">Loading...</h2>
+          <p className="text-muted-foreground">Setting up chat interface</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen flex bg-background">
