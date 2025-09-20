@@ -22,6 +22,8 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          light: "hsl(var(--primary-light))",
+          dark: "hsl(var(--primary-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -46,6 +48,26 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        // Chat-specific colors
+        chat: {
+          bg: "hsl(var(--chat-bg))",
+          pattern: "hsl(var(--chat-pattern))",
+        },
+        message: {
+          sent: "hsl(var(--message-sent))",
+          "sent-foreground": "hsl(var(--message-sent-foreground))",
+          received: "hsl(var(--message-received))",
+          "received-foreground": "hsl(var(--message-received-foreground))",
+        },
+        status: {
+          sent: "hsl(var(--status-sent))",
+          delivered: "hsl(var(--status-delivered))",
+          read: "hsl(var(--status-read))",
+        },
+        audio: {
+          bg: "hsl(var(--audio-bg))",
+          wave: "hsl(var(--audio-wave))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
