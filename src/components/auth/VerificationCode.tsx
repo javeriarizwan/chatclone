@@ -26,7 +26,7 @@ export const VerificationCode = () => {
   useEffect(() => {
     // Update verification code in auth context
     setVerificationCode(code.join(''));
-  }, [code, setVerificationCode]);
+  }, [code]); // Removed setVerificationCode from dependencies to prevent infinite loop
 
   const handleInputChange = (index: number, value: string) => {
     if (value.length > 1) return; // Only allow single digits
@@ -202,8 +202,9 @@ export const VerificationCode = () => {
           </div>
 
           {/* Help text */}
-          <p className="text-xs text-muted-foreground mt-8">
-            Enter the 6-digit code we sent to your phone. This helps us verify your identity.
+          <p className="text-xs text-muted-foreground mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <strong>⚡ Demo Mode:</strong> This is a demo app! Since we don't have SMS service connected, 
+            <strong> enter any 6 digits</strong> (like 123456) to continue. Real SMS verification will work when you connect Supabase.
           </p>
         </div>
       </div>
