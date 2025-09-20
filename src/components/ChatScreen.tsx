@@ -172,20 +172,40 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
       }
 
       // Simulate message status updates
-      setTimeout(() => {
-        // Update status to delivered in database
-        supabase
-          .from('messages')
-          .update({ status: 'delivered' })
-          .eq('id', message.id);
+      setTimeout(async () => {
+        try {
+          // Update status to delivered in database
+          const { error } = await supabase
+            .from('messages')
+            .update({ status: 'delivered' })
+            .eq('id', message.id);
+          
+          if (error) {
+            console.error('Error updating message to delivered:', error);
+          } else {
+            console.log(`Message ${message.id} updated to delivered`);
+          }
+        } catch (error) {
+          console.error('Failed to update message status to delivered:', error);
+        }
       }, 1000);
 
-      setTimeout(() => {
-        // Update status to read in database  
-        supabase
-          .from('messages')
-          .update({ status: 'read' })
-          .eq('id', message.id);
+      setTimeout(async () => {
+        try {
+          // Update status to read in database  
+          const { error } = await supabase
+            .from('messages')
+            .update({ status: 'read' })
+            .eq('id', message.id);
+          
+          if (error) {
+            console.error('Error updating message to read:', error);
+          } else {
+            console.log(`Message ${message.id} updated to read`);
+          }
+        } catch (error) {
+          console.error('Failed to update message status to read:', error);
+        }
       }, 3000);
 
       toast({
@@ -262,20 +282,40 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
       }
 
       // Simulate message status updates
-      setTimeout(() => {
-        // Update status to delivered in database
-        supabase
-          .from('messages')
-          .update({ status: 'delivered' })
-          .eq('id', message.id);
+      setTimeout(async () => {
+        try {
+          // Update status to delivered in database
+          const { error } = await supabase
+            .from('messages')
+            .update({ status: 'delivered' })
+            .eq('id', message.id);
+          
+          if (error) {
+            console.error('Error updating audio message to delivered:', error);
+          } else {
+            console.log(`Audio message ${message.id} updated to delivered`);
+          }
+        } catch (error) {
+          console.error('Failed to update audio message status to delivered:', error);
+        }
       }, 1000);
 
-      setTimeout(() => {
-        // Update status to read in database  
-        supabase
-          .from('messages')
-          .update({ status: 'read' })
-          .eq('id', message.id);
+      setTimeout(async () => {
+        try {
+          // Update status to read in database  
+          const { error } = await supabase
+            .from('messages')
+            .update({ status: 'read' })
+            .eq('id', message.id);
+          
+          if (error) {
+            console.error('Error updating audio message to read:', error);
+          } else {
+            console.log(`Audio message ${message.id} updated to read`);
+          }
+        } catch (error) {
+          console.error('Failed to update audio message status to read:', error);
+        }
       }, 3000);
 
       toast({
