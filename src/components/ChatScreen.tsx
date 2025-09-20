@@ -3,7 +3,7 @@ import { Conversation, Message } from "@/types/chat";
 import { getMessagesForConversation, currentUser, addMessage } from "@/data/mockData";
 import { MessageBubble } from "./MessageBubble";
 import { AudioRecorder } from "./AudioRecorder";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Phone, Video, MoreVertical, Send, Mic } from "lucide-react";
@@ -140,9 +140,10 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={otherUser.avatar} />
-          <AvatarFallback>{otherUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+        <Avatar className="h-10 w-10 bg-secondary text-foreground">
+          <AvatarFallback className="bg-secondary text-foreground font-semibold">
+            {otherUser.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
         
         <div className="flex-1">

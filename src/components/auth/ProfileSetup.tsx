@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Camera, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 
 export const ProfileSetup = () => {
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState('');
   const { completeProfile, isLoading, setStep } = useAuth();
   const { toast } = useToast();
 
@@ -34,10 +33,10 @@ export const ProfileSetup = () => {
     }
 
     try {
-      await completeProfile(name.trim(), avatar);
+      await completeProfile(name.trim(), ''); // No avatar needed
       toast({
         title: 'Profile completed!',
-        description: 'Welcome to WhatsApp! You can now start messaging.',
+        description: 'Welcome to ConnectPro! You can now start messaging.',
       });
     } catch (error) {
       toast({
@@ -46,20 +45,6 @@ export const ProfileSetup = () => {
         variant: 'destructive',
       });
     }
-  };
-
-  const generateAvatar = () => {
-    const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${name || 'user'}`;
-    setAvatar(avatarUrl);
-  };
-
-  const handleAvatarClick = () => {
-    // In a real app, this would open image picker
-    toast({
-      title: 'Avatar generation',
-      description: 'For demo purposes, we\'ll generate a random avatar for you!',
-    });
-    generateAvatar();
   };
 
   return (
@@ -93,26 +78,15 @@ export const ProfileSetup = () => {
             {/* Avatar Section */}
             <div className="text-center">
               <div className="relative inline-block">
-                <Avatar className="w-32 h-32 mx-auto">
-                  <AvatarImage 
-                    src={avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${name || 'user'}`} 
-                  />
-                  <AvatarFallback className="text-2xl">
-                    {name ? name.split(' ').map(n => n[0]).join('').toUpperCase() : '👤'}
+                <Avatar className="w-32 h-32 mx-auto bg-primary text-primary-foreground">
+                  <AvatarFallback className="text-4xl font-semibold bg-primary text-primary-foreground">
+                    {name ? name.charAt(0).toUpperCase() : '👤'}
                   </AvatarFallback>
                 </Avatar>
-                
-                <Button
-                  type="button"
-                  onClick={handleAvatarClick}
-                  className="absolute -bottom-2 -right-2 rounded-full h-12 w-12 p-0 bg-primary hover:bg-primary-dark text-primary-foreground shadow-lg"
-                >
-                  <Camera className="h-5 w-5" />
-                </Button>
               </div>
               
               <p className="text-sm text-muted-foreground mt-3">
-                Tap to add profile photo
+                Your profile initial
               </p>
             </div>
 
@@ -128,7 +102,7 @@ export const ProfileSetup = () => {
                 autoFocus
               />
               <p className="text-xs text-muted-foreground text-center mt-2">
-                This is not your username or PIN. This name will be visible to your WhatsApp contacts.
+                This is your display name that will be visible to your ConnectPro contacts.
               </p>
             </div>
 

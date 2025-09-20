@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { User } from '@/types/chat';
 import { addContact, createConversation } from '@/data/mockData';
 import { UserPlus } from 'lucide-react';
@@ -85,9 +85,10 @@ export const AddContactDialog = ({ onContactAdded }: AddContactDialogProps) => {
           {/* Preview Avatar */}
           {name && (
             <div className="text-center">
-              <Avatar className="w-20 h-20 mx-auto">
-                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`} />
-                <AvatarFallback>{name.split(' ').map(n => n[0]).join('').toUpperCase()}</AvatarFallback>
+              <Avatar className="w-20 h-20 mx-auto bg-primary text-primary-foreground">
+                <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-2xl">
+                  {name.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </div>
           )}

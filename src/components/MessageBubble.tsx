@@ -1,6 +1,6 @@
 import { Message, MessageStatus } from "@/types/chat";
 import { getUserById, currentUser } from "@/data/mockData";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { CheckCheck, Check, Clock } from "lucide-react";
 import { AudioPlayer } from "./AudioPlayer";
 
@@ -30,9 +30,10 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
   return (
     <div className={`flex gap-2 mb-4 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
       {!isOwnMessage && (
-        <Avatar className="h-8 w-8 mt-1">
-          <AvatarImage src={sender?.avatar} />
-          <AvatarFallback>{sender?.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+        <Avatar className="h-8 w-8 mt-1 bg-secondary text-foreground">
+          <AvatarFallback className="bg-secondary text-foreground font-medium text-xs">
+            {sender?.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
       )}
       
@@ -63,9 +64,10 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
       </div>
       
       {isOwnMessage && (
-        <Avatar className="h-8 w-8 mt-1">
-          <AvatarImage src={currentUser.avatar} />
-          <AvatarFallback>{currentUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+        <Avatar className="h-8 w-8 mt-1 bg-primary text-primary-foreground">
+          <AvatarFallback className="bg-primary text-primary-foreground font-medium text-xs">
+            {currentUser.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
         </Avatar>
       )}
     </div>

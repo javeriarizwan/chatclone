@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Conversation, User } from "@/types/chat";
 import { conversations, getUserById, currentUser } from "@/data/mockData";
 import { AddContactDialog } from "@/components/AddContactDialog";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
 
@@ -48,9 +48,10 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
       {/* Header */}
       <div className="p-4 border-b border-border bg-background">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={currentUser.avatar} />
-            <AvatarFallback>{currentUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+          <Avatar className="h-10 w-10 bg-primary text-primary-foreground">
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+              {currentUser.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div>
             <h1 className="font-semibold text-lg text-foreground">ConnectPro</h1>
@@ -84,9 +85,10 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
                   `}
                 >
                   <div className="relative">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={otherUser.avatar} />
-                      <AvatarFallback>{otherUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                    <Avatar className="h-12 w-12 bg-secondary text-foreground">
+                      <AvatarFallback className="bg-secondary text-foreground font-semibold">
+                        {otherUser.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
                     {otherUser.isOnline && (
                       <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></div>
