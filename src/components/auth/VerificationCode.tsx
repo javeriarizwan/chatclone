@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 export const VerificationCode = () => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -121,38 +122,22 @@ export const VerificationCode = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-primary to-primary-light text-primary-foreground p-4 flex items-center gap-4 shadow-lg">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setStep('phone')}
-          className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-        <h1 className="text-xl font-semibold">Verify phone number</h1>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-md text-center">
-          <div className="mb-8">
-            <div className="text-6xl mb-4">🔐</div>
-            <h2 className="text-2xl font-semibold text-foreground mb-4">
-              Enter verification code
-            </h2>
-            <p className="text-muted-foreground mb-2">
-              We've sent a 6-digit verification code to
-            </p>
-            <p className="font-semibold text-foreground">
-              {formatPhoneNumber(phoneNumber)}
-            </p>
+    <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-elegant border-border/50">
+        <CardHeader className="text-center pb-6">
+          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-xl">🔐</div>
           </div>
-
-          {/* Code Input */}
-          <div className="flex justify-center gap-3 mb-8" onPaste={handlePaste}>
+          <CardTitle className="text-xl font-medium text-foreground font-jakarta">
+            Enter verification code
+          </CardTitle>
+          <CardDescription className="text-muted-foreground text-sm">
+            We sent a code to {phoneNumber}
+          </CardDescription>
+        </CardHeader>
+        
+        <CardContent className="space-y-6">
+          <div className="flex justify-center gap-2" onPaste={handlePaste}>
             {code.map((digit, index) => (
               <Input
                 key={index}
@@ -164,50 +149,43 @@ export const VerificationCode = () => {
                 value={digit}
                 onChange={(e) => handleInputChange(index, e.target.value.replace(/\D/g, ''))}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 text-center text-lg font-semibold"
+                className="w-10 h-11 text-center text-base border-border font-mono"
               />
             ))}
           </div>
-
-          {/* Actions */}
-          <div className="space-y-4">
-            <Button
-              onClick={() => handleVerify()}
-              disabled={isLoading || code.some(digit => digit === '')}
-              className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-primary-foreground py-3 shadow-lg transition-all duration-300"
+          
+          <Button 
+            onClick={() => handleVerify()}
+            disabled={isLoading || code.some(digit => digit === '')}
+            className="w-full h-11 bg-primary hover:bg-primary-dark text-primary-foreground font-medium rounded-lg transition-colors"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              'Verify'
+            )}
+          </Button>
+          
+          <div className="text-center">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleResendCode}
+              disabled={isLoading}
+              className="text-muted-foreground hover:text-foreground text-sm p-0"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Verifying...
-                </>
-              ) : (
-                'Verify'
-              )}
+              Resend code
             </Button>
-
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-2">
-                Didn't receive the code?
-              </p>
-              <Button
-                variant="link"
-                onClick={handleResendCode}
-                disabled={isLoading}
-                className="text-primary hover:text-primary-dark"
-              >
-                Resend code
-              </Button>
-            </div>
           </div>
-
-          {/* Help text */}
-          <p className="text-xs text-muted-foreground mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-            <strong>⚡ Demo Mode:</strong> This is a demo app! Since we don't have SMS service connected, 
-            <strong> enter any 6 digits</strong> (like 123456) to continue. Real SMS verification will work when you connect Supabase.
+          
+          <p className="text-xs text-muted-foreground text-center bg-secondary/50 rounded-lg p-3">
+            <strong>Demo Mode:</strong> Enter any 6 digits to continue
           </p>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

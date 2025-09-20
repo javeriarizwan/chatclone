@@ -8,44 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* TalkJS-inspired clean theme */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 13%;
+    /* Professional clean theme - inspired by Chat Whisper */
+    --background: 0 0% 98%;
+    --foreground: 220 13% 18%;
 
-    /* Chat backgrounds - clean gray */
-    --chat-bg: 0 0% 97%;
-    --chat-pattern: 0 0% 95%;
+    /* Chat backgrounds - ultra clean */
+    --chat-bg: 0 0% 96%;
+    --chat-pattern: 0 0% 94%;
 
-    /* TalkJS blue primary colors */
-    --primary: 214 100% 50%;
+    /* Professional dark primary colors */
+    --primary: 220 13% 18%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 214 100% 60%;
-    --primary-dark: 214 100% 40%;
-    --primary-glow: 214 100% 70%;
+    --primary-light: 220 13% 28%;
+    --primary-dark: 220 13% 8%;
+    --primary-glow: 220 13% 38%;
 
-    /* Message bubbles - TalkJS style */
-    --message-sent: 214 100% 50%;
+    /* Message bubbles - clean and professional */
+    --message-sent: 220 13% 18%;
     --message-sent-foreground: 0 0% 100%;
     --message-received: 0 0% 100%;
-    --message-received-foreground: 0 0% 13%;
+    --message-received-foreground: 220 13% 18%;
 
-    /* Status colors - subtle grays and blues */
-    --status-sent: 0 0% 60%;
-    --status-delivered: 214 100% 50%;
-    --status-read: 214 100% 50%;
+    /* Status colors - subtle and professional */
+    --status-sent: 0 0% 50%;
+    --status-delivered: 220 13% 18%;
+    --status-read: 220 13% 18%;
 
-    /* Audio message - clean styling */
+    /* Audio message - minimal styling */
     --audio-bg: 0 0% 95%;
-    --audio-wave: 214 100% 50%;
+    --audio-wave: 220 13% 18%;
 
-    /* Clean gradient definitions */
+    /* Professional gradient definitions */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(214 100% 50%), hsl(214 100% 60%));
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 97%), hsl(0 0% 95%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 13% 18%), hsl(220 13% 28%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 98%), hsl(0 0% 96%));
 
-    /* Subtle shadows */
-    --shadow-elegant: 0 2px 8px -2px hsl(0 0% 0% / 0.1);
-    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.2);
+    /* Clean shadows */
+    --shadow-elegant: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-glow: 0 0 15px hsl(var(--primary) / 0.1);
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 7%;
@@ -53,21 +53,21 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 220 13% 18%;
 
-    --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 214 100% 50%;
+    --accent: 220 13% 18%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
+    --border: 0 0% 88%;
     --input: 0 0% 100%;
-    --ring: 214 100% 50%;
+    --ring: 220 13% 18%;
 
     --radius: 0.5rem;
 
@@ -133,6 +133,6 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter antialiased;
   }
 }
