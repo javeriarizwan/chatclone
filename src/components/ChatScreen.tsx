@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Conversation, Message } from "@/types/chat";
+import { Conversation, Message, MessageType, MessageStatus } from "@/types/chat";
 import { getMessagesForConversation, currentUser, addMessage } from "@/data/mockData";
 import { MessageBubble } from "./MessageBubble";
 import { AudioRecorder } from "./AudioRecorder";
@@ -41,9 +41,45 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
 
   useEffect(() => {
     if (conversation?.id) {
-      setMessages(getMessagesForConversation(conversation.id));
+      loadMessages();
+      // Poll for new messages every 2 seconds
+      const interval = setInterval(loadMessages, 2000);
+      return () => clearInterval(interval);
     }
   }, [conversation?.id]);
+
+  const loadMessages = async () => {
+    if (!conversation?.id) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('conversation_id', conversation.id)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Error loading messages:', error);
+        return;
+      }
+
+      // Convert database format to frontend format
+      const formattedMessages: Message[] = data?.map(msg => ({
+        id: msg.id,
+        conversationId: msg.conversation_id,
+        senderId: msg.sender_id,
+        type: msg.type as MessageType,
+        content: msg.content,
+        status: msg.status as MessageStatus,
+        createdAt: new Date(msg.created_at),
+        ...(msg.duration && { duration: msg.duration })
+      })) || [];
+
+      setMessages(formattedMessages);
+    } catch (error) {
+      console.error('Failed to load messages:', error);
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -99,30 +135,48 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
       createdAt: new Date(),
     };
 
-    setMessages(prev => [...prev, message]);
-    addMessage(message); // Add to global messages
-    setNewMessage("");
+    // Save to database
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .insert({
+          id: message.id,
+          conversation_id: message.conversationId,
+          sender_id: message.senderId,
+          sender_name: currentUser.name,
+          type: message.type,
+          content: message.content,
+          status: message.status,
+        });
 
-    // Send webhook
-    await sendWebhook(message);
+      if (error) {
+        console.error('Error saving message:', error);
+        toast({
+          title: "Error",
+          description: "Failed to send message",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // Simulate message status updates
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(m => m.id === message.id ? { ...m, status: "delivered" } : m)
-      );
-    }, 1000);
+      setNewMessage("");
+      // Message will appear via polling
+      
+      // Send webhook
+      await sendWebhook(message);
 
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(m => m.id === message.id ? { ...m, status: "read" } : m)
-      );
-    }, 3000);
-
-    toast({
-      title: "Message sent",
-      description: `Your message was sent to ${otherUser.name}`,
-    });
+      toast({
+        title: "Message sent",
+        description: `Your message was sent to ${otherUser.name}`,
+      });
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSendAudio = async (audioBlob: Blob, duration: number) => {

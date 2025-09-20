@@ -90,8 +90,38 @@ serve(async (req) => {
 
     console.log('Message received via HTTP:', message);
 
-    // In a real implementation, you would store this in your database
-    // For now, we'll just log it and return success
+    // Save message to database
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.57.4');
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const { data, error } = await supabase
+      .from('messages')
+      .insert({
+        id: message.id,
+        conversation_id: message.conversationId,
+        sender_id: message.senderId,
+        sender_name: message.senderName,
+        type: message.type,
+        content: message.content,
+        status: message.status,
+        duration: message.duration
+      });
+
+    if (error) {
+      console.error('Database error:', error);
+      return new Response(JSON.stringify({ 
+        error: 'Failed to save message to database',
+        details: error.message 
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Message saved to database successfully');
     
     return new Response(JSON.stringify({ 
       success: true, 
