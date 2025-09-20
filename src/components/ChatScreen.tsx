@@ -182,43 +182,72 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
   };
 
   const handleSendAudio = async (audioBlob: Blob, duration: number) => {
-    const audioUrl = URL.createObjectURL(audioBlob);
-    
-    const message: Message = {
-      id: `msg-${Date.now()}`,
-      conversationId: conversation.id,
-      senderId: currentUser.id,
-      type: "audio",
-      content: audioUrl,
-      status: "sent",
-      createdAt: new Date(),
-      duration,
-    };
+    try {
+      // Convert blob to base64 for storage
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve) => {
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          resolve(base64);
+        };
+        reader.readAsDataURL(audioBlob);
+      });
 
-    setMessages(prev => [...prev, message]);
-    addMessage(message); // Add to global messages
-    setIsRecording(false);
+      const base64Audio = await base64Promise;
+      
+      const message: Message = {
+        id: `msg-${Date.now()}`,
+        conversationId: conversation.id,
+        senderId: currentUser.id,
+        type: "audio",
+        content: base64Audio, // Store base64 instead of blob URL
+        status: "sent",
+        createdAt: new Date(),
+        duration,
+      };
 
-    // Send webhook
-    await sendWebhook(message);
+      // Save to database
+      const { error: dbError } = await supabase
+        .from('messages')
+        .insert({
+          id: message.id,
+          conversation_id: message.conversationId,
+          sender_id: message.senderId,
+          sender_name: currentUser.name,
+          type: message.type,
+          content: message.content,
+          status: message.status,
+          duration: message.duration,
+          created_at: message.createdAt.toISOString()
+        });
 
-    // Simulate message status updates
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(m => m.id === message.id ? { ...m, status: "delivered" } : m)
-      );
-    }, 1000);
+      if (dbError) {
+        console.error('Error saving audio message:', dbError);
+        toast({
+          title: "Error",
+          description: "Failed to send audio message",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(m => m.id === message.id ? { ...m, status: "read" } : m)
-      );
-    }, 3000);
+      setIsRecording(false);
 
-    toast({
-      title: "Audio message sent",
-      description: `Your voice message was sent to ${otherUser.name}`,
-    });
+      // Send webhook
+      await sendWebhook(message);
+
+      toast({
+        title: "Audio message sent",
+        description: `Your voice message was sent to ${otherUser.name}`,
+      });
+    } catch (error) {
+      console.error('Failed to send audio message:', error);
+      toast({
+        title: "Error", 
+        description: "Failed to send audio message",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
