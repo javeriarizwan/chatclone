@@ -45,7 +45,7 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
   return (
     <div className="h-full bg-card border-r border-border">
       {/* Header */}
-      <div className="p-4 border-b border-border bg-primary text-primary-foreground">
+      <div className="p-4 border-b border-border bg-primary text-primary-foreground relative">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
             <AvatarImage src={currentUser.avatar} />
