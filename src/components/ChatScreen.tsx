@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Phone, Video, MoreVertical, Send, Mic, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 
 interface ChatScreenProps {
   conversation: Conversation;
@@ -34,36 +33,6 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const sendWebhook = async (message: Message) => {
-    try {
-      const payload = {
-        messageId: message.id,
-        conversationId: message.conversationId,
-        senderId: message.senderId,
-        senderName: currentUser.name,
-        recipientId: otherUser.id,
-        recipientName: otherUser.name,
-        messageType: message.type,
-        content: message.content,
-        timestamp: message.createdAt.toISOString(),
-        status: message.status,
-        ...(message.duration && { duration: message.duration }),
-      };
-
-      const { data, error } = await supabase.functions.invoke('send-webhook', {
-        body: payload,
-      });
-
-      if (error) {
-        console.error('Webhook error:', error);
-      } else {
-        console.log('Webhook sent successfully:', data);
-      }
-    } catch (error) {
-      console.error('Failed to send webhook:', error);
-    }
-  };
-
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
@@ -80,9 +49,6 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
     setMessages(prev => [...prev, message]);
     addMessage(message); // Add to global messages
     setNewMessage("");
-
-    // Send webhook
-    await sendWebhook(message);
 
     // Simulate message status updates
     setTimeout(() => {
@@ -120,9 +86,6 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
     setMessages(prev => [...prev, message]);
     addMessage(message); // Add to global messages
     setIsRecording(false);
-
-    // Send webhook
-    await sendWebhook(message);
 
     // Simulate message status updates
     setTimeout(() => {
