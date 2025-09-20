@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,6 +21,14 @@ interface WebhookPayload {
   duration?: number; // For audio messages
 }
 
+interface AIAgentResponse {
+  type: 'text' | 'audio';
+  content: string; // For audio, this will be base64 encoded
+  duration?: number; // For audio messages
+  recipientId: string;
+  conversationId: string;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -34,6 +43,11 @@ serve(async (req) => {
   }
 
   try {
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
     const payload: WebhookPayload = await req.json();
     
     console.log('Webhook payload received:', payload);
@@ -77,13 +91,54 @@ serve(async (req) => {
       });
     }
 
-    const responseData = await webhookResponse.text();
-    console.log('Webhook sent successfully:', responseData);
+    // Parse the webhook response to check for AI agent responses
+    let responseData;
+    try {
+      const responseText = await webhookResponse.text();
+      console.log('Webhook response received:', responseText);
+      responseData = JSON.parse(responseText);
+    } catch (parseError) {
+      console.log('Webhook response is not JSON, treating as success');
+      return new Response(JSON.stringify({ 
+        success: true, 
+        message: 'Webhook sent successfully'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Check if the response contains an AI agent response
+    if (responseData && responseData.aiResponse) {
+      const aiResponse: AIAgentResponse = responseData.aiResponse;
+      console.log('Processing AI agent response:', aiResponse);
+      
+      // Create a new message from the AI agent
+      const aiMessageId = `ai-msg-${Date.now()}`;
+      
+      const { error: insertError } = await supabase
+        .from('messages')
+        .insert({
+          id: aiMessageId,
+          conversation_id: aiResponse.conversationId,
+          sender_id: 'ai-agent', // Use a special ID for AI agent
+          sender_name: 'AI Assistant',
+          type: aiResponse.type,
+          content: aiResponse.content,
+          status: 'delivered',
+          ...(aiResponse.duration && { duration: aiResponse.duration }),
+        });
+
+      if (insertError) {
+        console.error('Error saving AI response message:', insertError);
+      } else {
+        console.log('AI response message saved successfully:', aiMessageId);
+      }
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 
       message: 'Webhook sent successfully',
-      webhookResponse: responseData 
+      webhookResponse: responseData || 'Success' 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

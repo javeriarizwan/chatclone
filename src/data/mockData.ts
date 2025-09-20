@@ -28,6 +28,15 @@ export const getMessagesForConversation = (conversationId: string): Message[] =>
 
 export const getUserById = (userId: string): User | undefined => {
   if (userId === currentUser.id) return currentUser;
+  if (userId === 'ai-agent') {
+    return {
+      id: 'ai-agent',
+      name: 'AI Assistant',
+      email: 'ai@assistant.com',
+      avatar: '',
+      isOnline: true,
+    };
+  }
   return users.find(u => u.id === userId);
 };
 
