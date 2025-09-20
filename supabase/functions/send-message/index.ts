@@ -20,6 +20,42 @@ serve(async (req) => {
       });
     }
 
+    // Check if request has a body
+    const contentType = req.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return new Response(JSON.stringify({ 
+        error: 'Content-Type must be application/json' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Get request body text first
+    const bodyText = await req.text();
+    if (!bodyText || bodyText.trim() === '') {
+      return new Response(JSON.stringify({ 
+        error: 'Request body is required' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Parse JSON
+    let requestData;
+    try {
+      requestData = JSON.parse(bodyText);
+    } catch (parseError) {
+      return new Response(JSON.stringify({ 
+        error: 'Invalid JSON in request body',
+        details: parseError.message 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { 
       conversationId, 
       senderId, 
@@ -27,7 +63,7 @@ serve(async (req) => {
       content, 
       type = 'text',
       duration 
-    } = await req.json();
+    } = requestData;
 
     // Validate required fields
     if (!conversationId || !senderId || !senderName || !content) {
