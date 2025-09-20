@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Mic, MicOff, Send, Trash2 } from "lucide-react";
+import { Mic, Square, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,7 +12,6 @@ export const AudioRecorder = ({ onSendAudio, onCancel }: AudioRecorderProps) => 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -79,23 +78,6 @@ export const AudioRecorder = ({ onSendAudio, onCancel }: AudioRecorderProps) => 
     }
   };
 
-  const pauseRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      if (isPaused) {
-        mediaRecorderRef.current.resume();
-        intervalRef.current = setInterval(() => {
-          setRecordingTime(prev => prev + 1);
-        }, 1000);
-      } else {
-        mediaRecorderRef.current.pause();
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      }
-      setIsPaused(!isPaused);
-    }
-  };
-
   const handleSend = () => {
     if (audioBlob) {
       onSendAudio(audioBlob, recordingTime);
@@ -118,96 +100,96 @@ export const AudioRecorder = ({ onSendAudio, onCancel }: AudioRecorderProps) => 
     setIsRecording(false);
     setRecordingTime(0);
     setAudioBlob(null);
-    setIsPaused(false);
   };
 
-  const getWaveformBars = () => {
-    const bars = [];
-    const barCount = 15;
-    
-    for (let i = 0; i < barCount; i++) {
-      const height = isRecording && !isPaused 
-        ? Math.random() * 20 + 5 // Animated bars when recording
-        : 10; // Static bars when not recording
-      
-      bars.push(
+  const AnimatedWave = () => (
+    <div className="flex items-center gap-1 px-3">
+      {[...Array(8)].map((_, i) => (
         <div
           key={i}
-          className={`
-            w-1 rounded-full transition-all duration-150
-            ${isRecording ? 'bg-primary animate-pulse' : 'bg-muted-foreground/40'}
-          `}
-          style={{ height: `${height}px` }}
+          className={`w-1 bg-primary rounded-full transition-all duration-300 ${
+            isRecording ? 'animate-pulse' : ''
+          }`}
+          style={{
+            height: isRecording 
+              ? `${12 + Math.sin((Date.now() / 200) + i) * 6}px`
+              : '8px',
+            animationDelay: `${i * 100}ms`
+          }}
         />
-      );
-    }
-    
-    return bars;
-  };
+      ))}
+    </div>
+  );
 
   return (
-    <div className="flex items-center gap-3 p-4 bg-card border-t border-border">
-      <div className="flex items-center gap-2 flex-1">
-        {/* Recording visualizer */}
-        <div className="flex items-center gap-1 flex-1 min-w-0">
-          {getWaveformBars()}
-        </div>
-        
-        {/* Recording time */}
-        <span className="text-sm text-muted-foreground tabular-nums min-w-0">
-          {formatTime(recordingTime)}
-        </span>
-      </div>
+    <div className="flex items-center gap-3 p-3 bg-background border-t border-border">
+      {/* Recording State */}
+      {!audioBlob && (
+        <>
+          {isRecording ? (
+            <div className="flex items-center flex-1 bg-primary/10 rounded-full px-4 py-2">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mr-3" />
+              <AnimatedWave />
+              <span className="text-sm font-medium text-primary ml-3">
+                {formatTime(recordingTime)}
+              </span>
+            </div>
+          ) : (
+            <div className="flex-1" />
+          )}
+          
+          <div className="flex items-center gap-2">
+            {!isRecording ? (
+              <Button
+                onClick={startRecording}
+                size="icon"
+                className="rounded-full h-12 w-12 bg-primary hover:bg-primary/90"
+              >
+                <Mic className="h-5 w-5" />
+              </Button>
+            ) : (
+              <Button
+                onClick={stopRecording}
+                size="icon"
+                className="rounded-full h-12 w-12 bg-red-500 hover:bg-red-600"
+              >
+                <Square className="h-4 w-4 fill-white" />
+              </Button>
+            )}
+          </div>
+        </>
+      )}
 
-      {/* Control buttons */}
-      <div className="flex items-center gap-2">
-        {!isRecording && !audioBlob && (
-          <Button
-            onClick={startRecording}
-            className="bg-primary hover:bg-primary-dark text-primary-foreground rounded-full h-10 w-10 p-0"
-          >
-            <Mic className="h-5 w-5" />
-          </Button>
-        )}
-        
-        {isRecording && (
-          <>
-            <Button
-              onClick={pauseRecording}
-              variant="outline"
-              className="rounded-full h-10 w-10 p-0"
-            >
-              {isPaused ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
-            </Button>
-            
-            <Button
-              onClick={stopRecording}
-              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground rounded-full h-10 w-10 p-0"
-            >
-              <MicOff className="h-5 w-5" />
-            </Button>
-          </>
-        )}
-        
-        {audioBlob && !isRecording && (
-          <>
+      {/* Preview State */}
+      {audioBlob && !isRecording && (
+        <>
+          <div className="flex items-center flex-1 bg-muted rounded-full px-4 py-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full mr-3" />
+            <span className="text-sm text-muted-foreground">
+              Audio recorded • {formatTime(recordingTime)}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-2">
             <Button
               onClick={handleCancel}
-              variant="outline"
-              className="rounded-full h-10 w-10 p-0"
+              size="icon"
+              variant="ghost"
+              className="rounded-full h-10 w-10"
             >
-              <Trash2 className="h-5 w-5" />
+              <X className="h-4 w-4" />
             </Button>
             
             <Button
               onClick={handleSend}
-              className="bg-primary hover:bg-primary-dark text-primary-foreground rounded-full h-10 w-10 p-0"
+              size="icon"
+              className="rounded-full h-12 w-12 bg-primary hover:bg-primary/90"
             >
               <Send className="h-5 w-5" />
             </Button>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
