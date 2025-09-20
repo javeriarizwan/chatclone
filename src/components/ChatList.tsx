@@ -4,6 +4,9 @@ import { conversations, getUserById, currentUser } from "@/data/mockData";
 import { AddContactDialog } from "@/components/AddContactDialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { LogOut, Settings } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 
 interface ChatListProps {
@@ -12,6 +15,7 @@ interface ChatListProps {
 
 export const ChatList = ({ onSelectConversation }: ChatListProps) => {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const { logout } = useAuth();
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversationId(conversation.id);
@@ -53,10 +57,19 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
               {currentUser.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div>
+          <div className="flex-1">
             <h1 className="font-semibold text-lg text-foreground">ConnectPro</h1>
             <p className="text-sm text-muted-foreground">Welcome back!</p>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={logout}
+            className="text-muted-foreground hover:text-foreground hover:bg-secondary h-8 w-8 p-0"
+            title="Logout"
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
