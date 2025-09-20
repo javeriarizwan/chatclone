@@ -49,31 +49,18 @@ serve(async (req) => {
       });
     }
 
-    // Create URL with query parameters for GET request
-    const url = new URL(webhookUrl);
-    
-    // Add all payload data as query parameters
-    url.searchParams.append('event', 'message_sent');
-    url.searchParams.append('messageId', payload.messageId);
-    url.searchParams.append('conversationId', payload.conversationId);
-    url.searchParams.append('senderId', payload.senderId);
-    url.searchParams.append('senderName', payload.senderName);
-    url.searchParams.append('recipientId', payload.recipientId);
-    url.searchParams.append('recipientName', payload.recipientName);
-    url.searchParams.append('messageType', payload.messageType);
-    url.searchParams.append('content', payload.content);
-    url.searchParams.append('timestamp', payload.timestamp);
-    url.searchParams.append('status', payload.status);
-    if (payload.duration) {
-      url.searchParams.append('duration', payload.duration.toString());
-    }
-
-    // Send GET request to the configured webhook
-    const webhookResponse = await fetch(url.toString(), {
-      method: 'GET',
+    // Send the payload to the configured webhook
+    const webhookResponse = await fetch(webhookUrl, {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'User-Agent': 'WhatsApp-Clone-Webhook/1.0',
       },
+      body: JSON.stringify({
+        event: 'message_sent',
+        data: payload,
+        timestamp: new Date().toISOString(),
+      }),
     });
 
     if (!webhookResponse.ok) {
