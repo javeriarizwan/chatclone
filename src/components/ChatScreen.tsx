@@ -6,8 +6,9 @@ import { AudioRecorder } from "./AudioRecorder";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Phone, Video, MoreVertical, Send, Mic } from "lucide-react";
+import { ArrowLeft, Phone, Video, MoreVertical, Send, Mic, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ChatScreenProps {
   conversation: Conversation;
@@ -20,6 +21,7 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { logout } = useAuth();
 
   const otherUser = conversation.participants.find(p => p.id !== currentUser.id) || conversation.participants[0];
 
@@ -174,6 +176,15 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
             className="text-muted-foreground hover:text-foreground hover:bg-secondary h-8 w-8 p-0"
           >
             <MoreVertical className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={logout}
+            className="text-muted-foreground hover:text-foreground hover:bg-secondary h-8 w-8 p-0"
+            title="Logout"
+          >
+            <LogOut className="h-5 w-5" />
           </Button>
         </div>
       </div>
