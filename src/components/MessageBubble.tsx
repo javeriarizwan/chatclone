@@ -11,6 +11,9 @@ interface MessageBubbleProps {
 export const MessageBubble = ({ message }: MessageBubbleProps) => {
   const sender = getUserById(message.senderId);
   const isOwnMessage = message.senderId === currentUser.id;
+  
+  // Get sender name - use sender object if available, otherwise use sender_name from message
+  const senderName = sender?.name || (message as any).sender_name || 'Unknown';
 
   const getStatusIcon = (status: MessageStatus) => {
     switch (status) {
@@ -32,7 +35,7 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
       {!isOwnMessage && (
         <Avatar className="h-8 w-8 mt-1 bg-secondary text-foreground">
           <AvatarFallback className="bg-secondary text-foreground font-medium text-xs">
-            {sender?.name.charAt(0).toUpperCase()}
+            {senderName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
       )}

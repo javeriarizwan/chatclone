@@ -72,8 +72,10 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
         content: msg.content,
         status: msg.status as MessageStatus,
         createdAt: new Date(msg.created_at),
-        ...(msg.duration && { duration: msg.duration })
-      })) || [];
+        ...(msg.duration && { duration: msg.duration }),
+        // Include sender_name for avatar display
+        sender_name: msg.sender_name
+      } as any)) || [];
 
       setMessages(formattedMessages);
     } catch (error) {
