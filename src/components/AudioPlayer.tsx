@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +11,29 @@ interface AudioPlayerProps {
 export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [playableUrl, setPlayableUrl] = useState<string>("");
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    // Convert base64 audio to playable URL if needed
+    if (audioUrl.startsWith('data:')) {
+      // It's already a data URL, use it directly
+      setPlayableUrl(audioUrl);
+    } else if (audioUrl.startsWith('blob:')) {
+      // It's a blob URL, use it directly
+      setPlayableUrl(audioUrl);
+    } else {
+      // Assume it's base64 encoded audio data
+      setPlayableUrl(audioUrl);
+    }
+
+    return () => {
+      // Cleanup blob URLs to prevent memory leaks
+      if (playableUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(playableUrl);
+      }
+    };
+  }, [audioUrl]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -19,20 +41,41 @@ export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerPro
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const togglePlayback = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        // Since we're using mock data, we'll simulate playback
+  const togglePlayback = async () => {
+    if (audioRef.current && playableUrl) {
+      try {
+        if (isPlaying) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        } else {
+          // Reset to beginning if at end
+          if (currentTime >= duration) {
+            audioRef.current.currentTime = 0;
+            setCurrentTime(0);
+          }
+          
+          console.log('Attempting to play audio:', playableUrl.substring(0, 50) + '...');
+          await audioRef.current.play();
+          setIsPlaying(true);
+        }
+      } catch (error) {
+        console.error('Error playing audio:', error);
+        console.log('Audio URL format:', playableUrl.substring(0, 100));
+        console.log('Audio element readyState:', audioRef.current?.readyState);
+        console.log('Audio element networkState:', audioRef.current?.networkState);
+        
+        // Show user-friendly error
+        alert('Unable to play audio. The audio format may not be supported by your browser.');
+        
+        // Fallback to simulation if real audio fails
         simulatePlayback();
+        setIsPlaying(true);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
   const simulatePlayback = () => {
-    let elapsed = 0;
+    let elapsed = currentTime;
     const interval = setInterval(() => {
       elapsed += 0.1;
       setCurrentTime(elapsed);
@@ -44,6 +87,7 @@ export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerPro
       }
     }, 100);
 
+    // Store interval in a ref so we can clear it if needed
     return () => clearInterval(interval);
   };
 
@@ -61,8 +105,8 @@ export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerPro
           className={`
             w-1 rounded-full transition-all duration-150
             ${isActive 
-              ? (isOwnMessage ? 'bg-message-sent-foreground' : 'bg-primary') 
-              : (isOwnMessage ? 'bg-message-sent-foreground/40' : 'bg-muted-foreground/40')
+              ? (isOwnMessage ? 'bg-primary-foreground' : 'bg-primary') 
+              : (isOwnMessage ? 'bg-primary-foreground/40' : 'bg-muted-foreground/40')
             }
           `}
           style={{ height: `${height}px` }}
@@ -82,7 +126,7 @@ export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerPro
         className={`
           h-8 w-8 rounded-full p-0 shrink-0
           ${isOwnMessage 
-            ? 'hover:bg-message-sent-foreground/20 text-message-sent-foreground' 
+            ? 'hover:bg-primary-foreground/20 text-primary-foreground' 
             : 'hover:bg-primary/20 text-primary'
           }
         `}
@@ -100,15 +144,15 @@ export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerPro
       
       <span className={`
         text-xs tabular-nums
-        ${isOwnMessage ? 'text-message-sent-foreground/70' : 'text-message-received-foreground/70'}
+        ${isOwnMessage ? 'text-primary-foreground/70' : 'text-muted-foreground/70'}
       `}>
         {isPlaying ? formatTime(currentTime) : formatTime(duration)}
       </span>
       
-      {/* Hidden audio element for future real implementation */}
+      {/* Audio element for playback */}
       <audio
         ref={audioRef}
-        src={audioUrl}
+        src={playableUrl}
         onTimeUpdate={() => {
           if (audioRef.current) {
             setCurrentTime(audioRef.current.currentTime);
@@ -117,6 +161,28 @@ export const AudioPlayer = ({ audioUrl, duration, isOwnMessage }: AudioPlayerPro
         onEnded={() => {
           setIsPlaying(false);
           setCurrentTime(0);
+        }}
+        onPause={() => {
+          setIsPlaying(false);
+        }}
+        onPlay={() => {
+          setIsPlaying(true);
+        }}
+        onLoadStart={() => {
+          console.log('Audio loading started');
+        }}
+        onCanPlay={() => {
+          console.log('Audio can play');
+        }}
+        onError={(e) => {
+          console.error('Audio element error:', e);
+          const target = e.target as HTMLAudioElement;
+          if (target.error) {
+            console.error('Audio error details:', {
+              code: target.error.code,
+              message: target.error.message
+            });
+          }
         }}
         style={{ display: 'none' }}
       />

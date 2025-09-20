@@ -29,7 +29,19 @@ export const AudioRecorder = ({ onSendAudio, onCancel }: AudioRecorderProps) => 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       
-      const mediaRecorder = new MediaRecorder(stream);
+      // Choose the best supported audio format
+      let mimeType = 'audio/webm';
+      if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+        mimeType = 'audio/webm;codecs=opus';
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        mimeType = 'audio/mp4';
+      } else if (MediaRecorder.isTypeSupported('audio/wav')) {
+        mimeType = 'audio/wav';
+      }
+      
+      console.log('Using audio format:', mimeType);
+      
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
       mediaRecorderRef.current = mediaRecorder;
       
       const chunks: Blob[] = [];
@@ -41,7 +53,8 @@ export const AudioRecorder = ({ onSendAudio, onCancel }: AudioRecorderProps) => 
       };
       
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/wav' });
+        // Use the same mimeType for the blob
+        const blob = new Blob(chunks, { type: mimeType });
         setAudioBlob(blob);
       };
       
