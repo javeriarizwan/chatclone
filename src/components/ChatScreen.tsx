@@ -35,6 +35,7 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
   };
 
   const sendWebhook = async (message: Message) => {
+    console.log('Attempting to send webhook for message:', message.id);
     try {
       const payload = {
         messageId: message.id,
@@ -49,6 +50,8 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
         status: message.status,
         ...(message.duration && { duration: message.duration }),
       };
+
+      console.log('Sending webhook payload:', payload);
 
       const { data, error } = await supabase.functions.invoke('send-webhook', {
         body: payload,
