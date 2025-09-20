@@ -10,14 +10,19 @@ const Index = () => {
     // Create a default conversation for testing if none exists
     if (conversations.length === 0) {
       const testUser = {
-        id: `user-${Date.now()}`,
+        id: `user-iqra`,
         name: "iqra",
         email: "iqra@example.com",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=iqra",
         isOnline: true,
       };
       
-      const testConversation = createConversation(testUser);
+      const testConversation = {
+        id: "conv-1", // Fixed conversation ID
+        participants: [currentUser, testUser],
+        unreadCount: 0,
+        updatedAt: new Date(),
+      };
       setSelectedConversation(testConversation);
     } else {
       setSelectedConversation(conversations[0]);
