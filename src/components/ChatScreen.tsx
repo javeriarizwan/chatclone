@@ -164,8 +164,29 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
       setNewMessage("");
       // Message will appear via polling
       
-      // Send webhook
-      await sendWebhook(message);
+      // Send webhook (ignore errors as it's optional)
+      try {
+        await sendWebhook(message);
+      } catch (webhookError) {
+        console.warn('Webhook failed (non-critical):', webhookError);
+      }
+
+      // Simulate message status updates
+      setTimeout(() => {
+        // Update status to delivered in database
+        supabase
+          .from('messages')
+          .update({ status: 'delivered' })
+          .eq('id', message.id);
+      }, 1000);
+
+      setTimeout(() => {
+        // Update status to read in database  
+        supabase
+          .from('messages')
+          .update({ status: 'read' })
+          .eq('id', message.id);
+      }, 3000);
 
       toast({
         title: "Message sent",
@@ -233,8 +254,29 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
 
       setIsRecording(false);
 
-      // Send webhook
-      await sendWebhook(message);
+      // Send webhook (ignore errors as it's optional)
+      try {
+        await sendWebhook(message);
+      } catch (webhookError) {
+        console.warn('Webhook failed (non-critical):', webhookError);
+      }
+
+      // Simulate message status updates
+      setTimeout(() => {
+        // Update status to delivered in database
+        supabase
+          .from('messages')
+          .update({ status: 'delivered' })
+          .eq('id', message.id);
+      }, 1000);
+
+      setTimeout(() => {
+        // Update status to read in database  
+        supabase
+          .from('messages')
+          .update({ status: 'read' })
+          .eq('id', message.id);
+      }, 3000);
 
       toast({
         title: "Audio message sent",
