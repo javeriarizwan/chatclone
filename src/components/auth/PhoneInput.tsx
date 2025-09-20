@@ -69,8 +69,8 @@ export const PhoneInput = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-6 text-center">
-        <h1 className="text-2xl font-semibold">Welcome to WhatsApp</h1>
+      <div className="bg-gradient-to-r from-primary to-primary-light text-primary-foreground p-6 text-center shadow-lg">
+        <h1 className="text-2xl font-semibold">Welcome to ConnectPro</h1>
         <p className="text-primary-foreground/80 mt-2">
           Read our Privacy Policy. Tap "Agree and continue" to accept the Terms of Service.
         </p>
@@ -85,7 +85,7 @@ export const PhoneInput = () => {
               Verify your phone number
             </h2>
             <p className="text-muted-foreground">
-              WhatsApp will need to verify your phone number. What's your number?
+              ConnectPro will need to verify your phone number. What's your number?
             </p>
           </div>
 
@@ -142,7 +142,7 @@ export const PhoneInput = () => {
             <Button
               type="submit"
               disabled={isLoading || !phoneNumber.trim()}
-              className="w-full bg-primary hover:bg-primary-dark text-primary-foreground py-3"
+              className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-primary-foreground py-3 shadow-lg transition-all duration-300"
             >
               {isLoading ? (
                 <>

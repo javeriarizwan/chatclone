@@ -8,34 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* WhatsApp-inspired color system */
+    /* Professional purple-blue gradient theme */
     --background: 0 0% 100%;
     --foreground: 0 0% 7%;
 
     /* Chat backgrounds */
-    --chat-bg: 220 13% 95%;
-    --chat-pattern: 220 8% 98%;
+    --chat-bg: 250 50% 98%;
+    --chat-pattern: 250 30% 96%;
 
-    /* WhatsApp green theme */
-    --primary: 142 70% 35%;
+    /* Beautiful purple-blue primary colors */
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 142 70% 45%;
-    --primary-dark: 142 70% 25%;
+    --primary-light: 262 83% 68%;
+    --primary-dark: 262 83% 48%;
+    --primary-glow: 262 83% 78%;
 
     /* Message bubbles */
-    --message-sent: 142 70% 35%;
+    --message-sent: 262 83% 58%;
     --message-sent-foreground: 0 0% 100%;
     --message-received: 0 0% 100%;
     --message-received-foreground: 0 0% 7%;
 
     /* Status colors */
     --status-sent: 210 40% 70%;
-    --status-delivered: 142 70% 35%;
+    --status-delivered: 262 83% 58%;
     --status-read: 221 83% 53%;
 
     /* Audio message */
-    --audio-bg: 142 40% 25%;
-    --audio-wave: 142 70% 45%;
+    --audio-bg: 262 60% 25%;
+    --audio-wave: 262 83% 68%;
+
+    /* Gradient definitions */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
+    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%), hsl(280 83% 68%), hsl(300 83% 78%));
+    --gradient-subtle: linear-gradient(180deg, hsl(250 50% 98%), hsl(250 30% 96%));
+
+    /* Shadows with primary color */
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 7%;
@@ -43,21 +53,21 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
 
-    --secondary: 220 13% 95%;
+    --secondary: 250 50% 96%;
     --secondary-foreground: 0 0% 7%;
 
-    --muted: 220 13% 95%;
+    --muted: 250 50% 96%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 142 70% 35%;
+    --accent: 262 83% 58%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 96%;
-    --ring: 142 70% 35%;
+    --border: 250 30% 91%;
+    --input: 250 30% 96%;
+    --ring: 262 83% 58%;
 
     --radius: 0.5rem;
 

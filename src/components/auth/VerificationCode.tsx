@@ -123,7 +123,7 @@ export const VerificationCode = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-4 flex items-center gap-4">
+      <div className="bg-gradient-to-r from-primary to-primary-light text-primary-foreground p-4 flex items-center gap-4 shadow-lg">
         <Button
           variant="ghost"
           size="sm"
@@ -174,7 +174,7 @@ export const VerificationCode = () => {
             <Button
               onClick={() => handleVerify()}
               disabled={isLoading || code.some(digit => digit === '')}
-              className="w-full bg-primary hover:bg-primary-dark text-primary-foreground py-3"
+              className="w-full bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-primary-foreground py-3 shadow-lg transition-all duration-300"
             >
               {isLoading ? (
                 <>

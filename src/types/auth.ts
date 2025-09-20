@@ -9,7 +9,7 @@ export interface AuthUser {
 export interface AuthState {
   user: AuthUser | null;
   isLoading: boolean;
-  step: 'phone' | 'verification' | 'profile' | 'complete';
+  step: 'splash' | 'phone' | 'verification' | 'profile' | 'complete';
   phoneNumber: string;
   verificationCode: string;
 }

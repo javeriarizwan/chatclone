@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     isLoading: false,
-    step: 'phone',
+    step: 'splash',
     phoneNumber: '',
     verificationCode: '',
   });
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setAuthState({
       user: null,
       isLoading: false,
-      step: 'phone',
+      step: 'splash',
       phoneNumber: '',
       verificationCode: '',
     });

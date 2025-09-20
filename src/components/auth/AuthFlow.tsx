@@ -1,12 +1,19 @@
 import { useAuth } from '@/contexts/AuthContext';
+import { SplashScreen } from './SplashScreen';
 import { PhoneInput } from './PhoneInput';
 import { VerificationCode } from './VerificationCode';
 import { ProfileSetup } from './ProfileSetup';
 
 export const AuthFlow = () => {
-  const { step } = useAuth();
+  const { step, setStep } = useAuth();
+
+  const handleSplashComplete = () => {
+    setStep('phone');
+  };
 
   switch (step) {
+    case 'splash':
+      return <SplashScreen onComplete={handleSplashComplete} />;
     case 'phone':
       return <PhoneInput />;
     case 'verification':
@@ -14,6 +21,6 @@ export const AuthFlow = () => {
     case 'profile':
       return <ProfileSetup />;
     default:
-      return <PhoneInput />;
+      return <SplashScreen onComplete={handleSplashComplete} />;
   }
 };
