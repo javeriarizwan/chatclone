@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Conversation, Message } from "@/types/chat";
-import { getMessagesForConversation, currentUser } from "@/data/mockData";
+import { getMessagesForConversation, currentUser, addMessage } from "@/data/mockData";
 import { MessageBubble } from "./MessageBubble";
 import { AudioRecorder } from "./AudioRecorder";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -45,6 +45,7 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
     };
 
     setMessages(prev => [...prev, message]);
+    addMessage(message); // Add to global messages
     setNewMessage("");
 
     // Simulate message status updates
@@ -81,6 +82,7 @@ export const ChatScreen = ({ conversation, onBack }: ChatScreenProps) => {
     };
 
     setMessages(prev => [...prev, message]);
+    addMessage(message); // Add to global messages
     setIsRecording(false);
 
     // Simulate message status updates

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Conversation, User } from "@/types/chat";
 import { conversations, getUserById, currentUser } from "@/data/mockData";
+import { AddContactDialog } from "@/components/AddContactDialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from "date-fns";
@@ -59,52 +60,68 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
       </div>
 
       {/* Conversations List */}
-      <div className="overflow-y-auto">
-        {conversations.map((conversation) => {
-          const otherUser = getOtherParticipant(conversation);
-          const isSelected = selectedConversationId === conversation.id;
-          
-          return (
-            <div
-              key={conversation.id}
-              onClick={() => handleSelectConversation(conversation)}
-              className={`
-                flex items-center gap-3 p-4 hover:bg-secondary/50 cursor-pointer border-b border-border/30 transition-colors
-                ${isSelected ? 'bg-secondary' : ''}
-              `}
-            >
-              <div className="relative">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={otherUser.avatar} />
-                  <AvatarFallback>{otherUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
-                </Avatar>
-                {otherUser.isOnline && (
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-card"></div>
-                )}
-              </div>
+      <div className="flex-1 overflow-y-auto relative">
+        {conversations.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+            <div className="text-6xl mb-4">💬</div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">No conversations yet</h3>
+            <p className="text-muted-foreground mb-6">Add a contact to start your first conversation</p>
+            <AddContactDialog onContactAdded={handleSelectConversation} />
+          </div>
+        ) : (
+          <>
+            {conversations.map((conversation) => {
+              const otherUser = getOtherParticipant(conversation);
+              const isSelected = selectedConversationId === conversation.id;
               
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-foreground truncate">{otherUser.name}</h3>
-                  <span className="text-xs text-muted-foreground">
-                    {conversation.lastMessage && formatLastMessageTime(conversation.lastMessage.createdAt)}
-                  </span>
+              return (
+                <div
+                  key={conversation.id}
+                  onClick={() => handleSelectConversation(conversation)}
+                  className={`
+                    flex items-center gap-3 p-4 hover:bg-secondary/50 cursor-pointer border-b border-border/30 transition-colors
+                    ${isSelected ? 'bg-secondary' : ''}
+                  `}
+                >
+                  <div className="relative">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={otherUser.avatar} />
+                      <AvatarFallback>{otherUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                    </Avatar>
+                    {otherUser.isOnline && (
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-card"></div>
+                    )}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-semibold text-foreground truncate">{otherUser.name}</h3>
+                      <span className="text-xs text-muted-foreground">
+                        {conversation.lastMessage && formatLastMessageTime(conversation.lastMessage.createdAt)}
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-muted-foreground truncate flex-1">
+                        {getLastMessagePreview(conversation)}
+                      </p>
+                      {conversation.unreadCount > 0 && (
+                        <Badge className="bg-primary text-primary-foreground ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
+                          {conversation.unreadCount}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground truncate flex-1">
-                    {getLastMessagePreview(conversation)}
-                  </p>
-                  {conversation.unreadCount > 0 && (
-                    <Badge className="bg-primary text-primary-foreground ml-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
-                      {conversation.unreadCount}
-                    </Badge>
-                  )}
-                </div>
-              </div>
+              );
+            })}
+            
+            {/* Floating Add Button */}
+            <div className="absolute bottom-4 right-4">
+              <AddContactDialog onContactAdded={handleSelectConversation} />
             </div>
-          );
-        })}
+          </>
+        )}
       </div>
     </div>
   );
