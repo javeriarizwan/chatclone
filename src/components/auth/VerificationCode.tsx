@@ -76,7 +76,7 @@ export const VerificationCode = () => {
     }
 
     try {
-      await verifyCode();
+      await verifyCode(verificationCode); // Pass the code directly
       toast({
         title: 'Phone verified!',
         description: 'Your phone number has been successfully verified',

@@ -5,7 +5,7 @@ interface AuthContextType extends AuthState {
   setPhoneNumber: (phone: string) => void;
   setVerificationCode: (code: string) => void;
   sendVerificationCode: () => Promise<void>;
-  verifyCode: () => Promise<void>;
+  verifyCode: (codeToVerify?: string) => Promise<void>;
   completeProfile: (name: string, avatar?: string) => Promise<void>;
   logout: () => void;
   setStep: (step: AuthState['step']) => void;
@@ -55,14 +55,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }));
   };
 
-  const verifyCode = async () => {
+  const verifyCode = async (codeToVerify?: string) => {
     setAuthState(prev => ({ ...prev, isLoading: true }));
     
     // Simulate verification
     await new Promise(resolve => setTimeout(resolve, 1000));
     
+    // Use the provided code or the current state
+    const verificationCode = codeToVerify || authState.verificationCode;
+    
     // For demo, accept any 6-digit code
-    if (authState.verificationCode.length === 6) {
+    if (verificationCode.length === 6) {
       setAuthState(prev => ({ 
         ...prev, 
         isLoading: false, 
