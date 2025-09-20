@@ -2,3 +2,6 @@ project_id = "rkdgngofdstjjzekqrct"
 
 [functions.send-webhook]
 verify_jwt = false
+
+[functions.send-message]
+verify_jwt = false
