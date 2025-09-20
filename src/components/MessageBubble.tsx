@@ -37,10 +37,10 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
       )}
       
       <div className={`
-        max-w-[70%] rounded-2xl px-4 py-2 relative
+        max-w-[70%] rounded-2xl px-3 py-2 shadow-sm
         ${isOwnMessage 
-          ? 'bg-message-sent text-message-sent-foreground rounded-br-md' 
-          : 'bg-message-received text-message-received-foreground rounded-bl-md border border-border'
+          ? 'bg-primary text-primary-foreground rounded-br-sm ml-auto' 
+          : 'bg-background text-foreground rounded-bl-sm border border-border'
         }
       `}>
         {message.type === 'text' ? (
@@ -54,8 +54,8 @@ export const MessageBubble = ({ message }: MessageBubbleProps) => {
         )}
         
         <div className={`
-          flex items-center gap-1 mt-1 text-xs
-          ${isOwnMessage ? 'text-message-sent-foreground/70' : 'text-message-received-foreground/70'}
+          flex items-center gap-1 mt-1 text-xs opacity-70
+          ${isOwnMessage ? 'text-primary-foreground' : 'text-muted-foreground'}
         `}>
           <span>{formatTime(message.createdAt)}</span>
           {isOwnMessage && getStatusIcon(message.status)}

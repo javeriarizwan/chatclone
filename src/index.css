@@ -8,44 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Professional purple-blue gradient theme */
+    /* TalkJS-inspired clean theme */
     --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
+    --foreground: 0 0% 13%;
 
-    /* Chat backgrounds */
-    --chat-bg: 250 50% 98%;
-    --chat-pattern: 250 30% 96%;
+    /* Chat backgrounds - clean gray */
+    --chat-bg: 0 0% 97%;
+    --chat-pattern: 0 0% 95%;
 
-    /* Beautiful purple-blue primary colors */
-    --primary: 262 83% 58%;
+    /* TalkJS blue primary colors */
+    --primary: 214 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 262 83% 68%;
-    --primary-dark: 262 83% 48%;
-    --primary-glow: 262 83% 78%;
+    --primary-light: 214 100% 60%;
+    --primary-dark: 214 100% 40%;
+    --primary-glow: 214 100% 70%;
 
-    /* Message bubbles */
-    --message-sent: 262 83% 58%;
+    /* Message bubbles - TalkJS style */
+    --message-sent: 214 100% 50%;
     --message-sent-foreground: 0 0% 100%;
     --message-received: 0 0% 100%;
-    --message-received-foreground: 0 0% 7%;
+    --message-received-foreground: 0 0% 13%;
 
-    /* Status colors */
-    --status-sent: 210 40% 70%;
-    --status-delivered: 262 83% 58%;
-    --status-read: 221 83% 53%;
+    /* Status colors - subtle grays and blues */
+    --status-sent: 0 0% 60%;
+    --status-delivered: 214 100% 50%;
+    --status-read: 214 100% 50%;
 
-    /* Audio message */
-    --audio-bg: 262 60% 25%;
-    --audio-wave: 262 83% 68%;
+    /* Audio message - clean styling */
+    --audio-bg: 0 0% 95%;
+    --audio-wave: 214 100% 50%;
 
-    /* Gradient definitions */
+    /* Clean gradient definitions */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%), hsl(280 83% 68%), hsl(300 83% 78%));
-    --gradient-subtle: linear-gradient(180deg, hsl(250 50% 98%), hsl(250 30% 96%));
+    --gradient-hero: linear-gradient(135deg, hsl(214 100% 50%), hsl(214 100% 60%));
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 97%), hsl(0 0% 95%));
 
-    /* Shadows with primary color */
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+    /* Subtle shadows */
+    --shadow-elegant: 0 2px 8px -2px hsl(0 0% 0% / 0.1);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.2);
 
     --card: 0 0% 100%;
     --card-foreground: 0 0% 7%;
@@ -53,21 +53,21 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
 
-    --secondary: 250 50% 96%;
-    --secondary-foreground: 0 0% 7%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 13%;
 
-    --muted: 250 50% 96%;
+    --muted: 0 0% 95%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 262 83% 58%;
+    --accent: 214 100% 50%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 250 30% 91%;
-    --input: 250 30% 96%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 90%;
+    --input: 0 0% 100%;
+    --ring: 214 100% 50%;
 
     --radius: 0.5rem;
 

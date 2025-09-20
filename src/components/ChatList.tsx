@@ -44,17 +44,17 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
   };
 
   return (
-    <div className="h-full bg-card border-r border-border">
+    <div className="h-full bg-background border-r border-border">
       {/* Header */}
-      <div className="p-4 border-b border-border bg-primary text-primary-foreground relative">
+      <div className="p-4 border-b border-border bg-background">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
             <AvatarImage src={currentUser.avatar} />
             <AvatarFallback>{currentUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="font-semibold text-lg">Chats</h1>
-            <p className="text-sm text-primary-foreground/80">WhatsApp Clone</p>
+            <h1 className="font-semibold text-lg text-foreground">ConnectPro</h1>
+            <p className="text-sm text-muted-foreground">Welcome back!</p>
           </div>
         </div>
       </div>
@@ -79,8 +79,8 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
                   key={conversation.id}
                   onClick={() => handleSelectConversation(conversation)}
                   className={`
-                    flex items-center gap-3 p-4 hover:bg-secondary/50 cursor-pointer border-b border-border/30 transition-colors
-                    ${isSelected ? 'bg-secondary' : ''}
+                    flex items-center gap-3 p-4 hover:bg-secondary/30 cursor-pointer border-b border-border/30 transition-colors
+                    ${isSelected ? 'bg-secondary/50' : ''}
                   `}
                 >
                   <div className="relative">
@@ -89,13 +89,13 @@ export const ChatList = ({ onSelectConversation }: ChatListProps) => {
                       <AvatarFallback>{otherUser.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
                     </Avatar>
                     {otherUser.isOnline && (
-                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full border-2 border-card"></div>
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></div>
                     )}
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-foreground truncate">{otherUser.name}</h3>
+                      <h3 className="font-medium text-foreground truncate">{otherUser.name}</h3>
                       <span className="text-xs text-muted-foreground">
                         {conversation.lastMessage && formatLastMessageTime(conversation.lastMessage.createdAt)}
                       </span>
