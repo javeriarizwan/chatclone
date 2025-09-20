@@ -4,11 +4,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AuthFlow } from "@/components/auth/AuthFlow";
 import { ChatList } from "@/components/ChatList";
 import { ChatScreen } from "@/components/ChatScreen";
+import { Settings } from "@/pages/Settings";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings as SettingsIcon } from "lucide-react";
 
 const Index = () => {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
   const { user, logout } = useAuth();
 
   // Show auth flow if user is not authenticated
@@ -18,10 +20,21 @@ const Index = () => {
 
   const handleSelectConversation = (conversation: Conversation) => {
     setSelectedConversation(conversation);
+    setShowSettings(false);
   };
 
   const handleBackToList = () => {
     setSelectedConversation(null);
+    setShowSettings(false);
+  };
+
+  const handleShowSettings = () => {
+    setShowSettings(true);
+    setSelectedConversation(null);
+  };
+
+  const handleBackFromSettings = () => {
+    setShowSettings(false);
   };
 
   const handleLogout = () => {
@@ -30,29 +43,43 @@ const Index = () => {
 
   return (
     <div className="h-screen flex bg-background">
-      {/* Mobile: Show either chat list or chat screen */}
+      {/* Mobile: Show chat list, settings, or chat screen */}
       <div className="md:hidden w-full">
-        {selectedConversation ? (
+        {showSettings ? (
+          <Settings onBack={handleBackFromSettings} />
+        ) : selectedConversation ? (
           <ChatScreen 
             conversation={selectedConversation} 
             onBack={handleBackToList}
           />
         ) : (
           <div className="h-full">
-            {/* Mobile Header with Logout */}
+            {/* Mobile Header with Settings and Logout */}
             <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between">
               <div>
                 <h1 className="font-semibold text-lg">Chats</h1>
                 <p className="text-sm text-primary-foreground/80">Welcome, {user.name}!</p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleShowSettings}
+                  className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0"
+                  title="Settings"
+                >
+                  <SettingsIcon className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0"
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <div className="h-[calc(100vh-80px)]">
               <ChatList onSelectConversation={handleSelectConversation} />
@@ -67,21 +94,34 @@ const Index = () => {
         <div className="w-1/3 min-w-[300px] max-w-[400px] relative">
           <ChatList onSelectConversation={handleSelectConversation} />
           
-          {/* Desktop Logout Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className="absolute top-4 right-4 text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0 z-10"
-            title="Logout"
-          >
-            <LogOut className="h-4 w-4" />
-          </Button>
+          {/* Desktop Settings and Logout Buttons */}
+          <div className="absolute top-4 right-4 flex items-center gap-1 z-10">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleShowSettings}
+              className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0"
+              title="Settings"
+            >
+              <SettingsIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 p-0"
+              title="Logout"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
-        {/* Chat Screen Panel */}
+        {/* Chat Screen or Settings Panel */}
         <div className="flex-1">
-          {selectedConversation ? (
+          {showSettings ? (
+            <Settings onBack={handleBackFromSettings} />
+          ) : selectedConversation ? (
             <ChatScreen 
               conversation={selectedConversation} 
               onBack={handleBackToList}
